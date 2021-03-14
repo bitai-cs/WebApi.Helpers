@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>WebApiCommonLib</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.9.1</Version>
+    <Authors>Viko Bastidas</Authors>
+    <Company>Bastidas IT</Company>
+    <Product>ASP NET. Core Web Api Common Libraries</Product>
+    <Description>ASP NET. Core Web Api Helpers</Description>
+    <AssemblyVersion>1.9.1.7</AssemblyVersion>
+    <FileVersion>1.9.1.7</FileVersion>
+    <Copyright>Copyright © 2018-2020 Bastidas IT. All rights reserved.</Copyright>
+    <PackageId>WebApiCommonLib</PackageId>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y &quot;$(TargetDir)*.*&quot; &quot;$(ProjectDir)..\..\..\_bin\netstandard2.0\WebApiCommonLib\&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>
