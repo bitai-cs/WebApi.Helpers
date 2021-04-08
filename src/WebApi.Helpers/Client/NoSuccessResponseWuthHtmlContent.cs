@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
+using Bitai.WebApi.Common;
 
-namespace WebApiCommonLib {
-	public class NoSuccessHtmlContentResponse :IHttpResponse<string> {
-		public NoSuccessHtmlContentResponse(string html, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date) {
+namespace Bitai.WebApi.Client {
+	public class NoSuccessResponseWuthHtmlContent :IHttpResponse<string> {
+		public NoSuccessResponseWuthHtmlContent(string html, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date) {
 			this.Content = html;
 			this.HttpStatusCode = httpStatusCode;
 			this.ReasonPhrase = reasonPhrase;
@@ -28,6 +29,6 @@ namespace WebApiCommonLib {
 
 		public bool IsSuccessResponse => false;
 
-		public ContenType ContentType => ContenType.TextHtml;
+		public Conten_MediaType ContentType => Conten_MediaType.TextHtml;
 	}
 }

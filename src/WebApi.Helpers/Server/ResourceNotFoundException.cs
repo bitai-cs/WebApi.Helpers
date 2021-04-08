@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WebApiCommonLib {
+namespace Bitai.WebApi.Server {
 	public class ResourceNotFoundException :Exception {
 		public ResourceNotFoundException(string message) : base(message) { }
 

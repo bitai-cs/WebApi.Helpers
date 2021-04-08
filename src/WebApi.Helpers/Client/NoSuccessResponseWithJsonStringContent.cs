@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
+using Bitai.WebApi.Common;
 
-namespace WebApiCommonLib {
-	public class NoSuccessJsonStringContentResponse :IHttpResponse<string> {
-		public NoSuccessJsonStringContentResponse(string json, ContenType contentType, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date) {
-			if (!(contentType == ContenType.AppJson | contentType == ContenType.AppProblemJson))
+namespace Bitai.WebApi.Client {
+	public class NoSuccessResponseWithJsonStringContent : IHttpResponse<string> {
+		public NoSuccessResponseWithJsonStringContent(string json, Conten_MediaType contentType, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date) {
+			if (!(contentType == Conten_MediaType.ApplicationJson | contentType == Conten_MediaType.ApplicationProblemJson))
 				throw new InvalidOperationException($"The ContentType equal to \"{contentType.ToString()}\" cannot be assigned to this object");
 
 			this.Content = json;
@@ -32,6 +33,6 @@ namespace WebApiCommonLib {
 
 		public bool IsSuccessResponse => false;
 
-		public ContenType ContentType { get; }
+		public Conten_MediaType ContentType { get; }
 	}
 }

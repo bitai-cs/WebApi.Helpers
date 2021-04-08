@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Bitai.WebApi.Common;
 
-namespace WebApiCommonLib {
-	public class SuccessJsonContentResponse<TJSON> :IHttpResponse<TJSON> {
+namespace Bitai.WebApi.Client {
+	public class SuccessResponseWithJsonContent<DTOType> :IHttpResponse<DTOType> {
 		public HttpStatusCode HttpStatusCode { get; set; }
 
 		public string WebServer { get; set; }
 
 		public string Date { get; set; }
 
-		public TJSON Content { get; set; }
+		public DTOType Content { get; set; }
 
 		public string ReasonPhrase { get; set; }
 
 		public bool IsSuccessResponse => true;
 
-		public ContenType ContentType => ContenType.AppJson;
+		public Conten_MediaType ContentType => Conten_MediaType.ApplicationJson;
 
 
 

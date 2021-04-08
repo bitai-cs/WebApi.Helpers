@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Bitai.WebApi</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>2.0.0</Version>
+    <Authors>Viko Bastidas (BITAI)</Authors>
+    <Company>BITAI</Company>
+    <Product>ASP NET. Core Web Api Helpers</Product>
+    <Description>ASP NET. Core Web Api Helpers</Description>
+    <AssemblyVersion>2.0.0.7</AssemblyVersion>
+    <FileVersion>2.0.0.7</FileVersion>
+    <Copyright></Copyright>
+    <PackageId>Bitai.WebApi.Helpers</PackageId>
+    <RepositoryUrl>https://github.com/bitai-cs/WebApi.Helpers</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/bitai-cs/WebApi.Helpers</PackageProjectUrl>
+    <PackageIcon>api_64.png</PackageIcon>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y &quot;$(TargetDir)*.*&quot; &quot;$(ProjectDir)..\..\..\_bin\netstandard2.0\WebApiCommonLib\&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="System.Text.Json" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\resources\api_64.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
