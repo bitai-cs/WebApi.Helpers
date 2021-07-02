@@ -6,8 +6,8 @@ using System.Web;
 using Bitai.WebApi.Common;
 
 namespace Bitai.WebApi.Client {
-	public class NoSuccessResponseWuthHtmlContent :IHttpResponse<string> {
-		public NoSuccessResponseWuthHtmlContent(string html, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date) {
+	public class NoSuccessResponseWithHtmlContent :IHttpResponse<string> {
+		public NoSuccessResponseWithHtmlContent(string html, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date) {
 			this.Content = html;
 			this.HttpStatusCode = httpStatusCode;
 			this.ReasonPhrase = reasonPhrase;

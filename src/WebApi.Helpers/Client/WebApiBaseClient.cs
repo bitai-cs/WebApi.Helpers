@@ -118,8 +118,8 @@ namespace Bitai.WebApi.Client
 
             var _statusCode = responseMessage.StatusCode;
             var _reasonPhrase = responseMessage.ReasonPhrase;
-            var _webServer = responseMessage.Headers.Server.ToArray()[0].Product.ToString();
-            var _date = responseMessage.Headers.Date.HasValue ? responseMessage.Headers.Date.Value.LocalDateTime.ToString() : "?";
+            var _webServer = responseMessage.Headers.Server.ToArray().FirstOrDefault()?.Product.ToString();
+            var _date = responseMessage.Headers.Date.HasValue ? responseMessage.Headers.Date.Value.DateTime.ToString() : string.Empty;
 
             string _mediaType;
             if (responseMessage.Content.Headers.ContentLength.Value.Equals(0))
@@ -154,7 +154,7 @@ namespace Bitai.WebApi.Client
                 case MediaTypes.TextHtml:
                     var _htmlContent = await responseMessage.Content.ReadAsStringAsync();
 
-                    return new Bitai.WebApi.Client.NoSuccessResponseWuthHtmlContent(_htmlContent, _statusCode, _reasonPhrase, _webServer, _date);
+                    return new Bitai.WebApi.Client.NoSuccessResponseWithHtmlContent(_htmlContent, _statusCode, _reasonPhrase, _webServer, _date);
 
                 default: //En caso de llegar a este caso, se debería implementar el manejo para el MIME desconocido. Por ahora se dispara un error informando el caso.
                     throw new NotSupportedException(string.Format("No se puede devolver una vista para las respuestas de error de solicitud http cuyo contenido en la respuesta sea el tipo \"{0}\". Se debe de implementar el soporte para ese tipo MIME en el Assembly: NetSqlAzMan.CustomBussinessLogic Clase: LdapWebApiClientHelpers.BaseHelpers Método: getHttpWebApiRequestException", _mediaType));
