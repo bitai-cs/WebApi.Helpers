@@ -46,9 +46,9 @@ namespace Bitai.WebApi.Server
             context.Response.StatusCode = (int)httpStatusCode;
             context.Response.ContentType = Common.MediaTypes.ApplicationJson;
 
-            var jsonFormat = new Server.MiddlewareException(exception);
+            var contentModel = new Server.MiddlewareExceptionModel(exception);
 
-            return context.Response.WriteAsync(JsonSerializer.Serialize(jsonFormat));
+            return context.Response.WriteAsync(JsonSerializer.Serialize(contentModel));
         }
     }
 }

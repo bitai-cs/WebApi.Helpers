@@ -7,9 +7,9 @@ using Bitai.WebApi.Common;
 
 namespace Bitai.WebApi.Client
 {
-    public class NoSuccessResponseWithJsonExceptionContent : IHttpResponse<Server.MiddlewareException>
+    public class NoSuccessResponseWithJsonExceptionContent : IHttpResponse<Server.MiddlewareExceptionModel>
     {
-        public NoSuccessResponseWithJsonExceptionContent(Server.MiddlewareException exception, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date)
+        public NoSuccessResponseWithJsonExceptionContent(Server.MiddlewareExceptionModel exception, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date)
         {
             this.Content = exception;
             this.HttpStatusCode = httpStatusCode;
@@ -28,7 +28,7 @@ namespace Bitai.WebApi.Client
 
         public string Date { get; set; }
 
-        public Server.MiddlewareException Content { get; set; }
+        public Server.MiddlewareExceptionModel Content { get; set; }
 
         public bool IsSuccessResponse => false;
 

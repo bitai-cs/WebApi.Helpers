@@ -7,7 +7,7 @@ namespace Bitai.WebApi.Server
     /// <summary>
     /// Error catched in the exception handling middleware (<see cref="Server.ExceptionHandlingMiddleware"/>).
     /// </summary>
-    public class MiddlewareException
+    public class MiddlewareExceptionModel
     {
         #region Properties
         public bool IsMiddlewareException => true;
@@ -16,7 +16,7 @@ namespace Bitai.WebApi.Server
         public string Source { get; set; }
         public string StackTrace { get; set; }
         public IEnumerable<string> ErrorDetail { get; set; }
-        public MiddlewareException InnerMiddlewareException { get; set; }
+        public MiddlewareExceptionModel InnerMiddlewareException { get; set; }
         #endregion
 
 
@@ -24,7 +24,7 @@ namespace Bitai.WebApi.Server
         /// <summary>
         /// Constructor. Commonly used by the serializer.
         /// </summary>
-        public MiddlewareException()
+        public MiddlewareExceptionModel()
         {
             ErrorDetail = new List<string>();
         }
@@ -32,26 +32,26 @@ namespace Bitai.WebApi.Server
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="ex">Error that will provide the data to initialize properties</param>
-        public MiddlewareException(Exception ex) : this()
+        /// <param name="exception">Error that will provide the data to initialize properties</param>
+        public MiddlewareExceptionModel(Exception exception) : this()
         {
-            Type = ex.GetType().FullName;
-            Message = ex.Message;
-            Source = ex.Source;
-            StackTrace = ex.StackTrace;
+            Type = exception.GetType().FullName;
+            Message = exception.Message;
+            Source = exception.Source;
+            StackTrace = exception.StackTrace;
 
             var _detail = new List<string>();
-            foreach (var _key in ex.Data.Keys)
+            foreach (var _key in exception.Data.Keys)
             {
-                _detail.Add(string.Format("{0}: {1}", _key.ToString(), ex.Data[_key] ?? "null"));
+                _detail.Add(string.Format("{0}: {1}", _key.ToString(), exception.Data[_key] ?? "null"));
             }
             ErrorDetail = _detail;
 
-            if (ex.InnerException == null)
+            if (exception.InnerException == null)
                 return;
 
-            if (ex.InnerException != null)
-                InnerMiddlewareException = new MiddlewareException(ex.InnerException);
+            if (exception.InnerException != null)
+                InnerMiddlewareException = new MiddlewareExceptionModel(exception.InnerException);
         }
         #endregion
 
