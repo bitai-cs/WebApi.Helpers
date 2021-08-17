@@ -5,7 +5,7 @@ using System.Linq;
 namespace Bitai.WebApi.Server
 {
     /// <summary>
-    /// Error catched in the exception handling middleware (<see cref="Server.ExceptionHandlingMiddleware"/>).
+    /// Model of error handled in <see cref="Server.ExceptionHandlingMiddleware"/>.
     /// </summary>
     public class MiddlewareExceptionModel
     {

@@ -19,7 +19,7 @@ namespace Bitai.WebApi.Client {
 
 		public bool IsSuccessResponse => true;
 
-		public Conten_MediaType ContentType => Conten_MediaType.ApplicationJson;
+		public Content_MediaType ContentMediaType => Content_MediaType.ApplicationJson;
 
 
 

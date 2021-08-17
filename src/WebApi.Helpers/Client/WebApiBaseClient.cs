@@ -6,13 +6,25 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Bitai.WebApi.Common;
+using IdentityModel.Client;
 
 namespace Bitai.WebApi.Client
 {
-
-    public abstract partial class WebApiBaseClient<DTOType>
+    public abstract class WebApiBaseClient
     {
         protected readonly string WebApiBaseUrl;
+        protected readonly string WebApiClientGuid = Guid.NewGuid().ToString();
+
+
+
+
+        /// <summary>
+        /// Security parameters to request an access token to the Identity Server.
+        /// This access token will allow the client to make requests to the 
+        /// LDAP Web Api; if it requires it.
+        /// </summary>
+        public WebApiClientCredentials ClientCredentials { get; set; }
+
 
 
 
@@ -27,12 +39,13 @@ namespace Bitai.WebApi.Client
             WebApiBaseUrl = webApiBaseUrl;
         }
 
-
-
-        public bool IsNoSuccessResponse(IHttpResponse httpResponse)
+        protected WebApiBaseClient(string webApiBaseUrl, WebApiClientCredentials clientCredentials) : this(webApiBaseUrl)
         {
-            return !httpResponse.IsSuccessResponse;
+            ClientCredentials = clientCredentials;
         }
+
+
+
 
         public void ThrowClientRequestException(string exceptionMessage, IHttpResponse httpResponse)
         {
@@ -47,163 +60,56 @@ namespace Bitai.WebApi.Client
             return new WebApiRequestException(exceptionMessage, httpResponse);
         }
 
-        public DTOType GetDTOFromResponse(IHttpResponse httpResponse)
+        public DTOType GetDTOFromResponse<DTOType>(IHttpResponse httpResponse)
         {
             return ((SuccessResponseWithJsonContent<DTOType>)httpResponse).Content;
         }
 
-        public Task<DTOType> GetDTOFromResponseAsync(IHttpResponse httpResponse)
+        public Task<DTOType> GetDTOFromResponseAsync<DTOType>(IHttpResponse httpResponse)
         {
-            return Task.Run(() => GetDTOFromResponse(httpResponse));
+            return Task.Run(() => GetDTOFromResponse<DTOType>(httpResponse));
         }
 
-        public IEnumerable<DTOType> GetEnumerableDTOFromResponse(IHttpResponse httpResponse)
+        public IEnumerable<DTOType> GetEnumerableDTOFromResponse<DTOType>(IHttpResponse httpResponse)
         {
             return ((SuccessResponseWithJsonContent<IEnumerable<DTOType>>)httpResponse).Content;
         }
 
-        public Task<IEnumerable<DTOType>> GetEnumerableDTOFromResponseAsync(IHttpResponse httpResponse)
+        public Task<IEnumerable<DTOType>> GetEnumerableDTOFromResponseAsync<DTOType>(IHttpResponse httpResponse)
         {
-            return Task.Run(() => GetEnumerableDTOFromResponse(httpResponse));
+            return Task.Run(() => GetEnumerableDTOFromResponse<DTOType>(httpResponse));
         }
 
 
 
-        protected HttpClient CreateHttpClient(bool clearDefaultRequestHeaders = true, Header_AcceptType headerAcceptType = Header_AcceptType.ApplicationJson)
+
+        protected virtual async Task<AuthorizedHttpClient> CreateHttpClient(bool setAuthorizationHeaderWithBearerToken = false)
         {
+            if (setAuthorizationHeaderWithBearerToken && ClientCredentials == null)
+                throw new InvalidOperationException($"{nameof(setAuthorizationHeaderWithBearerToken)} was set to True, {nameof(ClientCredentials)} cannot be Null.");
+
             if (WebApiClientParameters.ClientRequestTimeOut == 0)
                 throw new InvalidOperationException("No se ha inicializado el parametro WebApiClientStartup.ClientRequestTimeOut");
 
             if (WebApiClientParameters.MaxResponseContentBufferSize == 0)
                 throw new InvalidOperationException("No se ha inicializado el parametro WebApiClientStartup.MaxResponseContentBufferSize");
 
-            //#if DEBUG
-            //            //For development and debugging purposes only
-            //            if (System.Net.ServicePointManager.ServerCertificateValidationCallback == null)
-            //            {
-            //                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate (object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
-            //                {
-            //                    return true;
-            //                };
-            //            }
-            //#endif
-
-            var httpClient = new HttpClient
+            var httpClient = new AuthorizedHttpClient
             {
                 Timeout = new TimeSpan(0, 0, WebApiClientParameters.ClientRequestTimeOut),
                 MaxResponseContentBufferSize = WebApiClientParameters.MaxResponseContentBufferSize
             };
 
-            if (clearDefaultRequestHeaders)
-                httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypes.ApplicationJson));
 
-            switch (headerAcceptType)
-            {
-                case Header_AcceptType.ApplicationJson:
-                    httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypes.ApplicationJson));
-                    break;
-                default:
-                    throw new Exception("No se ha especificado el tipo de Header Accept.");
-            }
+            if (setAuthorizationHeaderWithBearerToken)
+                await AuthorizedHttpClient.CheckClientCredentialsTokenHealth(WebApiClientGuid, httpClient, ClientCredentials);
 
             return httpClient;
         }
 
-        protected async Task<IHttpResponse> ParseHttpResponseToNoSuccessResponseAsync(HttpResponseMessage responseMessage)
-        {
-            //Validar StatusCode entre 200 y 299
-            if (responseMessage.StatusCode >= System.Net.HttpStatusCode.OK && responseMessage.StatusCode < System.Net.HttpStatusCode.MultipleChoices)
-                throw new InvalidOperationException("El código de estado de la respuesta es satisfactorio (200-299). No se puede realizar la operación ParseHttpResponseToNoSuccessResponseAsync.");
-
-            var statusCode = responseMessage.StatusCode;
-            var reasonPhrase = responseMessage.ReasonPhrase;
-            var webServer = responseMessage.Headers.Server.ToArray().FirstOrDefault()?.Product.ToString();
-            var date = responseMessage.Headers.Date.HasValue ? responseMessage.Headers.Date.Value.DateTime.ToString() : string.Empty;
-            var mediaType = responseMessage.Content.Headers.ContentLength.Value.Equals(0) ? MediaTypes.NoContent : responseMessage.Content.Headers.ContentType.MediaType.ToLower();
-
-            switch (mediaType)
-            {
-                case MediaTypes.NoContent:
-                    return new Bitai.WebApi.Client.NoSuccessResponseWithEmptyContent(statusCode, reasonPhrase, webServer, date);
-
-                case MediaTypes.ApplicationJson:
-                    var jsonContent = await responseMessage.Content.ReadAsStringAsync();
-
-                    if (!(jsonContent.IndexOf(nameof(Server.MiddlewareExceptionModel.IsMiddlewareException), comparisonType: StringComparison.OrdinalIgnoreCase).Equals(-1)))
-                    {
-                        var deserializedContent = JsonSerializer.Deserialize<Server.MiddlewareExceptionModel>(jsonContent, WebApiClientParameters.SerializerOptions);
-
-                        return new Bitai.WebApi.Client.NoSuccessResponseWithJsonExceptionContent(deserializedContent, statusCode, reasonPhrase, webServer, date);
-                    }
-                    else
-                    {
-                        return new Bitai.WebApi.Client.NoSuccessResponseWithJsonStringContent(jsonContent, Conten_MediaType.ApplicationJson, statusCode, reasonPhrase, webServer, date);
-                    }
-
-                case MediaTypes.ApplicationProblemJson:
-                    var problemJsonContent = await responseMessage.Content.ReadAsStringAsync();
-
-                    return new Bitai.WebApi.Client.NoSuccessResponseWithJsonStringContent(problemJsonContent, Conten_MediaType.ApplicationProblemJson, statusCode, reasonPhrase, webServer, date);
-
-                case MediaTypes.TextHtml:
-                    var htmlContent = await responseMessage.Content.ReadAsStringAsync();
-
-                    return new Bitai.WebApi.Client.NoSuccessResponseWithHtmlContent(htmlContent, statusCode, reasonPhrase, webServer, date);
-
-                default: //En caso de llegar a este caso, se debería implementar el manejo para el MIME desconocido. Por ahora se dispara un error informando el caso.
-                    throw new NotSupportedException(string.Format("No se puede devolver una vista para las respuestas de error de solicitud http cuyo contenido en la respuesta sea el tipo \"{0}\". Se debe de implementar el soporte para ese tipo MIME en el Assembly: NetSqlAzMan.CustomBussinessLogic Clase: LdapWebApiClientHelpers.BaseHelpers Método: getHttpWebApiRequestException", mediaType));
-            }
-        }
-
-        protected async Task<IHttpResponse> ParseHttpResponseToSuccessDTOResponseAsync(HttpResponseMessage responseMessage)
-        {
-            //Validar StatusCode entre 200 y 299
-            if (!(responseMessage.StatusCode >= System.Net.HttpStatusCode.OK && responseMessage.StatusCode < System.Net.HttpStatusCode.MultipleChoices))
-                throw new InvalidOperationException("El código de estado de la respuesta no es satisfactorio. No se puede realizar la operación ParseHttpResponseToSuccessResponseWithDTOContentAsync.");
-
-            var statusCode = responseMessage.StatusCode;
-            var reasonPhrase = responseMessage.ReasonPhrase;
-            var mediaType = responseMessage.Content.Headers.ContentLength.Value.Equals(0) ? MediaTypes.NoContent : responseMessage.Content.Headers.ContentType.MediaType.ToLower();
-            var jsonContent = await responseMessage.Content.ReadAsStringAsync();
-            var deserializedContent = await Task.Run(() => JsonSerializer.Deserialize<DTOType>(jsonContent, WebApiClientParameters.SerializerOptions));
-
-            var successJsonContentResponse = new SuccessResponseWithJsonContent<DTOType>()
-            {
-                HttpStatusCode = statusCode,
-                ReasonPhrase = reasonPhrase,
-                WebServer = responseMessage.Headers.Server.ToArray()[0].Product.ToString(),
-                Date = responseMessage.Headers.Date.HasValue ? responseMessage.Headers.Date.Value.LocalDateTime.ToString() : string.Empty,
-                Content = deserializedContent
-            };
-
-            return successJsonContentResponse;
-        }
-
-        protected async Task<IHttpResponse> ParseHttpResponseToSuccessEnumerableDTOResponseAsync(HttpResponseMessage responseMessage)
-        {
-            //Validar StatusCode entre 200 y 299
-            if (!(responseMessage.StatusCode >= System.Net.HttpStatusCode.OK && responseMessage.StatusCode < System.Net.HttpStatusCode.MultipleChoices))
-                throw new InvalidOperationException("El código de estado de la respuesta no es satisfactorio. No se puede realizar la operación ParseHttpResponseToSuccessResponseWithDTOContentAsync.");
-
-            var statusCode = responseMessage.StatusCode;
-            var reasonPhrase = responseMessage.ReasonPhrase;
-            var mediaType = responseMessage.Content.Headers.ContentLength.Value.Equals(0) ? MediaTypes.NoContent : responseMessage.Content.Headers.ContentType.MediaType.ToLower();
-            var jsonContent = await responseMessage.Content.ReadAsStringAsync();
-            var deserializedContent = await Task.Run(() => JsonSerializer.Deserialize<IEnumerable<DTOType>>(jsonContent, WebApiClientParameters.SerializerOptions));
-
-            var successJsonContentResponse = new SuccessResponseWithJsonContent<IEnumerable<DTOType>>()
-            {
-                HttpStatusCode = statusCode,
-                ReasonPhrase = reasonPhrase,
-                WebServer = responseMessage.Headers.Server.ToArray()[0].Product.ToString(),
-                Date = responseMessage.Headers.Date.HasValue ? responseMessage.Headers.Date.Value.LocalDateTime.ToString() : "?",
-                Content = deserializedContent
-            };
-
-            return successJsonContentResponse;
-        }
-
-        protected StringContent GetStringContentFromObject(object dto, Content_Encoding contentEncoding = Content_Encoding.UTF8, Conten_MediaType contentMediaType = Conten_MediaType.ApplicationJson)
+        protected StringContent GetStringContentFromObject(object dto, Content_Encoding contentEncoding = Content_Encoding.UTF8, Content_MediaType contentMediaType = Content_MediaType.ApplicationJson)
         {
             Encoding encoding;
             switch (contentEncoding)
@@ -218,7 +124,7 @@ namespace Bitai.WebApi.Client
             string mediaType;
             switch (contentMediaType)
             {
-                case Conten_MediaType.ApplicationJson:
+                case Content_MediaType.ApplicationJson:
                     mediaType = MediaTypes.ApplicationJson;
                     break;
                 default:
@@ -227,5 +133,32 @@ namespace Bitai.WebApi.Client
 
             return new StringContent(JsonSerializer.Serialize(dto, WebApiClientParameters.SerializerOptions), encoding, mediaType);
         }
+
+
+
+
+        #region Static classes
+        public static class WebApiClientParameters
+        {
+            static public int ClientRequestTimeOut { get; set; }
+
+            static public long MaxResponseContentBufferSize { get; set; }
+
+            static public JsonSerializerOptions SerializerOptions { get; set; }
+
+
+            /// <summary>
+            /// Constructor Static que inicializa los parametros con valores por defecto.
+            /// </summary>
+            static WebApiClientParameters()
+            {
+                ClientRequestTimeOut = 3 * 60;
+
+                MaxResponseContentBufferSize = 1 * 1024 * 1024;
+
+                SerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            }
+        }
+        #endregion
     }
 }

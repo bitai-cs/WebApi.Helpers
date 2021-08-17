@@ -7,12 +7,12 @@ using Bitai.WebApi.Common;
 
 namespace Bitai.WebApi.Client {
 	public class NoSuccessResponseWithJsonStringContent : IHttpResponse<string> {
-		public NoSuccessResponseWithJsonStringContent(string json, Conten_MediaType contentType, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date) {
-			if (!(contentType == Conten_MediaType.ApplicationJson | contentType == Conten_MediaType.ApplicationProblemJson))
+		public NoSuccessResponseWithJsonStringContent(string json, Content_MediaType contentType, HttpStatusCode httpStatusCode, string reasonPhrase, string webServer, string date) {
+			if (!(contentType == Content_MediaType.ApplicationJson | contentType == Content_MediaType.ApplicationProblemJson))
 				throw new InvalidOperationException($"The ContentType equal to \"{contentType.ToString()}\" cannot be assigned to this object");
 
 			this.Content = json;
-			this.ContentType = contentType;
+			this.ContentMediaType = contentType;
 			this.HttpStatusCode = httpStatusCode;
 			this.ReasonPhrase = reasonPhrase;
 			this.WebServer = webServer;
@@ -33,6 +33,6 @@ namespace Bitai.WebApi.Client {
 
 		public bool IsSuccessResponse => false;
 
-		public Conten_MediaType ContentType { get; }
+		public Content_MediaType ContentMediaType { get; }
 	}
 }
