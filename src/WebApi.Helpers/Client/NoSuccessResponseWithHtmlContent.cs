@@ -29,6 +29,6 @@ namespace Bitai.WebApi.Client {
 
 		public bool IsSuccessResponse => false;
 
-		public Conten_MediaType ContentType => Conten_MediaType.TextHtml;
+		public Content_MediaType ContentMediaType => Content_MediaType.TextHtml;
 	}
 }

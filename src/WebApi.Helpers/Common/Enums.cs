@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Bitai.WebApi.Common {
-	public enum Header_AcceptType {
-		ApplicationJson
-	}
+namespace Bitai.WebApi.Common
+{
+    public enum Content_MediaType
+    {
+        NoContent,
+        TextHtml,
+        ApplicationJson,
+        ApplicationProblemJson
+    }
 
-	public enum Conten_MediaType {
-		NoContent,
-		TextHtml,
-		ApplicationJson,
-		ApplicationProblemJson
-	}
-
-	public enum Content_Encoding {
-		UTF8
-	}
+    public enum Content_Encoding
+    {
+        UTF8
+    }
 }
