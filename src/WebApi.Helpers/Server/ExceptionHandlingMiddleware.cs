@@ -15,6 +15,7 @@ namespace Bitai.WebApi.Server
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+        private readonly string _fullTypeName = typeof(ExceptionHandlingMiddleware).FullName;
 
 
 
@@ -58,7 +59,9 @@ namespace Bitai.WebApi.Server
         /// <returns></returns>
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            _logger.LogError(exception, "{className}: Interceped error.", nameof(ExceptionHandlingMiddleware));
+            //_logger.LogError(exception, "{className}: Interceped error.", nameof(ExceptionHandlingMiddleware));
+            _logger.LogError("{className} trapped an error of type {exceptionType}. Below is the details of the error.", _fullTypeName, exception.GetType().FullName);
+            _logger.LogError("{@exception}", exception);
 
             HttpStatusCode httpStatusCode;
             if (typeof(ResourceNotFoundException).Equals(exception.GetType()))
@@ -67,9 +70,11 @@ namespace Bitai.WebApi.Server
                 httpStatusCode = HttpStatusCode.InternalServerError;
 
             context.Response.StatusCode = (int)httpStatusCode;
-            context.Response.ContentType = MediaTypes.ApplicationJson;
+            context.Response.ContentType = MediaTypes.ApplicationProblemJson;
 
             var contentModel = new MiddlewareExceptionModel(exception);
+
+            _logger.LogWarning("{className} will return a response with status code: {statusCode}({statusCodeNumber}), content type: {contentType} and body containing a serialized {serializedBody}.", _fullTypeName, httpStatusCode, (int)httpStatusCode, context.Response.ContentType, typeof(MiddlewareExceptionModel).FullName);
 
             return context.Response.WriteAsync(JsonSerializer.Serialize(contentModel));
         }

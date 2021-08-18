@@ -13,7 +13,7 @@ namespace Bitai.WebApi.Client
         {
             //Validar StatusCode entre 200 y 299
             if (responseMessage.StatusCode >= System.Net.HttpStatusCode.OK && responseMessage.StatusCode < System.Net.HttpStatusCode.MultipleChoices)
-                throw new InvalidOperationException("El código de estado de la respuesta es satisfactorio (200-299). No se puede realizar la operación ParseHttpResponseToNoSuccessResponseAsync.");
+                throw new InvalidOperationException($"The HTTP response message status code is {responseMessage.StatusCode} ({(int)responseMessage.StatusCode}). Cannot execute {nameof(HttpReponseMessageExtensions)}.{nameof(ToUnsuccessfulHttpResponseAsync)}.");
 
             var statusCode = responseMessage.StatusCode;
             var reasonPhrase = responseMessage.ReasonPhrase;
@@ -29,29 +29,29 @@ namespace Bitai.WebApi.Client
                 case MediaTypes.ApplicationJson:
                     var jsonContent = await responseMessage.Content.ReadAsStringAsync();
 
-                    if (!(jsonContent.IndexOf(nameof(Server.MiddlewareExceptionModel.IsMiddlewareException), comparisonType: StringComparison.OrdinalIgnoreCase).Equals(-1)))
+                    return new Bitai.WebApi.Client.NoSuccessResponseWithJsonStringContent(jsonContent, Content_MediaType.ApplicationJson, statusCode, reasonPhrase, webServer, date);
+
+                case MediaTypes.ApplicationProblemJson:
+                    var problemJsonContent = await responseMessage.Content.ReadAsStringAsync();
+
+                    if (!(problemJsonContent.IndexOf(nameof(Server.MiddlewareExceptionModel.IsMiddlewareException), comparisonType: StringComparison.OrdinalIgnoreCase).Equals(-1)))
                     {
-                        var deserializedContent = JsonSerializer.Deserialize<Server.MiddlewareExceptionModel>(jsonContent, WebApiBaseClient.WebApiClientParameters.SerializerOptions);
+                        var deserializedContent = JsonSerializer.Deserialize<Server.MiddlewareExceptionModel>(problemJsonContent, WebApiBaseClient.WebApiClientParameters.SerializerOptions);
 
                         return new Bitai.WebApi.Client.NoSuccessResponseWithJsonExceptionContent(deserializedContent, statusCode, reasonPhrase, webServer, date);
                     }
                     else
                     {
-                        return new Bitai.WebApi.Client.NoSuccessResponseWithJsonStringContent(jsonContent, Content_MediaType.ApplicationJson, statusCode, reasonPhrase, webServer, date);
+                        return new Bitai.WebApi.Client.NoSuccessResponseWithJsonStringContent(problemJsonContent, Content_MediaType.ApplicationProblemJson, statusCode, reasonPhrase, webServer, date);
                     }
-
-                case MediaTypes.ApplicationProblemJson:
-                    var problemJsonContent = await responseMessage.Content.ReadAsStringAsync();
-
-                    return new Bitai.WebApi.Client.NoSuccessResponseWithJsonStringContent(problemJsonContent, Content_MediaType.ApplicationProblemJson, statusCode, reasonPhrase, webServer, date);
 
                 case MediaTypes.TextHtml:
                     var htmlContent = await responseMessage.Content.ReadAsStringAsync();
 
                     return new Bitai.WebApi.Client.NoSuccessResponseWithHtmlContent(htmlContent, statusCode, reasonPhrase, webServer, date);
 
-                default: //En caso de llegar a este caso, se debería implementar el manejo para el MIME desconocido. Por ahora se dispara un error informando el caso.
-                    throw new NotSupportedException(string.Format("No se puede devolver una vista para las respuestas de error de solicitud http cuyo contenido en la respuesta sea el tipo \"{0}\". Se debe de implementar el soporte para ese tipo MIME en el Assembly: NetSqlAzMan.CustomBussinessLogic Clase: LdapWebApiClientHelpers.BaseHelpers Método: getHttpWebApiRequestException", mediaType));
+                default: //In this case, handling of the required MIME type should be implemented. For now an error is triggered.
+                    throw new NotSupportedException($"Unable to generate an {nameof(IHttpResponse)} for MIME \"{mediaType}\" type response content. Support must be implemented for the MIME type in {nameof(HttpReponseMessageExtensions)}.{nameof(ToUnsuccessfulHttpResponseAsync)}.");
             }
         }
 
@@ -59,7 +59,7 @@ namespace Bitai.WebApi.Client
         {
             //Validar StatusCode entre 200 y 299
             if (!(responseMessage.StatusCode >= System.Net.HttpStatusCode.OK && responseMessage.StatusCode < System.Net.HttpStatusCode.MultipleChoices))
-                throw new InvalidOperationException("El código de estado de la respuesta no es satisfactorio. No se puede realizar la operación ParseHttpResponseToSuccessResponseWithDTOContentAsync.");
+                throw new InvalidOperationException($"The HTTP response message status code is {responseMessage.StatusCode} ({(int)responseMessage.StatusCode}). Cannot execute {nameof(HttpReponseMessageExtensions)}.{nameof(ToSuccessfulHttpResponseAsync)}.");
 
             var statusCode = responseMessage.StatusCode;
             var reasonPhrase = responseMessage.ReasonPhrase;
