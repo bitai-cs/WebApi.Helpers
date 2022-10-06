@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Bitai.WebApi</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.0.2</Version>
+    <Version>6.0.0</Version>
     <Authors>Viko Bastidas (BITAI)</Authors>
     <Company>BITAI</Company>
     <Product>ASP NET. Core Web Api Helpers</Product>
     <Description>ASP NET. Core Web Api Helpers</Description>
-    <AssemblyVersion>3.0.2.12</AssemblyVersion>
-    <FileVersion>3.0.2.12</FileVersion>
+    <AssemblyVersion>6.0.0.1</AssemblyVersion>
+    <FileVersion>6.0.0.1</FileVersion>
     <Copyright></Copyright>
     <PackageId>Bitai.WebApi.Helpers</PackageId>
     <RepositoryUrl>https://github.com/bitai-cs/WebApi.Helpers</RepositoryUrl>
@@ -18,15 +18,11 @@
     <PackageIcon>api_64.png</PackageIcon>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /y &quot;$(TargetDir)*.*&quot; &quot;$(ProjectDir)..\..\..\_bin\netstandard2.0\WebApiCommonLib\&quot;" />
-  </Target>
-
   <ItemGroup>
-    <PackageReference Include="IdentityModel" Version="5.1.0" />
+    <PackageReference Include="IdentityModel" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
+    <PackageReference Include="System.Text.Json" Version="6.0.6" />
   </ItemGroup>
 
   <ItemGroup>
