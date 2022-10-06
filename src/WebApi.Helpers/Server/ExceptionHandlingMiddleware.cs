@@ -63,11 +63,16 @@ namespace Bitai.WebApi.Server
             _logger.LogError("{className} trapped an error of type {exceptionType}. Below is the details of the error.", _fullTypeName, exception.GetType().FullName);
             _logger.LogError("{@exception}", exception);
 
-            HttpStatusCode httpStatusCode;
-            if (typeof(ResourceNotFoundException).Equals(exception.GetType()))
+            Type exceptionType = exception.GetType();
+			HttpStatusCode httpStatusCode;
+            if (typeof(ResourceNotFoundException).Equals(exceptionType))
                 httpStatusCode = HttpStatusCode.NotFound;
-            else
-                httpStatusCode = HttpStatusCode.InternalServerError;
+			else if (typeof(BadRequestException).Equals(exceptionType))
+				httpStatusCode = HttpStatusCode.BadRequest;
+			else if (typeof(UnauthorizedException).Equals(exceptionType))
+				httpStatusCode = HttpStatusCode.Unauthorized;
+			else //Any other type of error will be considered an internal server error.
+				httpStatusCode = HttpStatusCode.InternalServerError;
 
             context.Response.StatusCode = (int)httpStatusCode;
             context.Response.ContentType = MediaTypes.ApplicationProblemJson;
