@@ -23,7 +23,7 @@ namespace Bitai.WebApi.Client
         /// This access token will allow the client to make requests to the 
         /// LDAP Web Api; if it requires it.
         /// </summary>
-        public WebApiClientCredentials ClientCredentials { get; set; }
+        public WebApiClientCredential ClientCredentials { get; set; }
 
 
 
@@ -39,7 +39,7 @@ namespace Bitai.WebApi.Client
             WebApiBaseUrl = webApiBaseUrl;
         }
 
-        protected WebApiBaseClient(string webApiBaseUrl, WebApiClientCredentials clientCredentials) : this(webApiBaseUrl)
+        protected WebApiBaseClient(string webApiBaseUrl, WebApiClientCredential clientCredentials) : this(webApiBaseUrl)
         {
             ClientCredentials = clientCredentials;
         }

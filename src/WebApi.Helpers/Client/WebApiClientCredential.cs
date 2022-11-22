@@ -7,8 +7,8 @@ namespace Bitai.WebApi.Client
     /// <summary>
     /// Client credentials definition to get access to LDAP Web Api.
     /// </summary>
-    public class WebApiClientCredentials
-    {
+    public class WebApiClientCredential
+	{
         /// <summary>
         /// Identity Server (Authority) URL
         /// </summary>
