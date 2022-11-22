@@ -55,7 +55,7 @@ namespace Bitai.WebApi.Client
         /// <param name="httpClient">See <see cref="AuthorizedHttpClient"/>.</param>
         /// <param name="clientCredentials">See <see cref="WebApiClientCredentials"/>.</param>
         /// <returns></returns>
-        internal static async Task CheckClientCredentialsTokenHealth(string webApiClientGuid, AuthorizedHttpClient httpClient, WebApiClientCredentials clientCredentials)
+        internal static async Task CheckClientCredentialsTokenHealth(string webApiClientGuid, AuthorizedHttpClient httpClient, WebApiClientCredential clientCredentials)
         {
             TokenResponse cachedTokenResponse = null;
             DateTime? cachedTokenExpireDate;
@@ -96,7 +96,7 @@ namespace Bitai.WebApi.Client
 
 
 
-        private static async Task<TokenResponse> getClientCredentialsToken(AuthorizedHttpClient httpClient, WebApiClientCredentials clientCredentials)
+        private static async Task<TokenResponse> getClientCredentialsToken(AuthorizedHttpClient httpClient, WebApiClientCredential clientCredentials)
         {
             var discoveryDocResponse = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
