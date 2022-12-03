@@ -4,13 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Bitai.WebApi</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>6.0.3</Version>
+    <Version>6.0.4</Version>
     <Authors>Viko Bastidas (BITAI)</Authors>
     <Company>BITAI</Company>
     <Product>ASP NET. Core Web Api Helpers</Product>
     <Description>ASP NET. Core Web Api Helpers</Description>
-    <AssemblyVersion>6.0.3.7</AssemblyVersion>
-    <FileVersion>6.0.3.7</FileVersion>
+    <AssemblyVersion>6.0.4.7</AssemblyVersion>
+    <FileVersion>6.0.4.7</FileVersion>
     <Copyright></Copyright>
     <PackageId>Bitai.WebApi.Helpers</PackageId>
     <RepositoryUrl>https://github.com/bitai-cs/WebApi.Helpers</RepositoryUrl>
