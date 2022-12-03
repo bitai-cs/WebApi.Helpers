@@ -32,6 +32,6 @@ namespace Bitai.WebApi.Client
 
         public bool IsSuccessResponse => false;
 
-        public Content_MediaType ContentMediaType => Content_MediaType.ApplicationJson;
+        public Content_MediaType ContentMediaType => Content_MediaType.ApplicationProblemJson;
     }
 }
