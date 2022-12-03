@@ -52,15 +52,15 @@ namespace Bitai.WebApi.Client
             throw GetClientRequestException(exceptionMessage, httpResponse);
         }
 
-        public Exception GetClientRequestException(string exceptionMessage, IHttpResponse httpResponse)
-        {
-            if (httpResponse.IsSuccessResponse)
-                throw new InvalidOperationException("La respuesta del Web Api es satisfactoria. No se puede inferir un objeto Exception de IHttpResponse.");
+		public WebApiRequestException GetClientRequestException(string exceptionMessage, IHttpResponse httpResponse)
+		{
+			if (httpResponse.IsSuccessResponse)
+				throw new InvalidOperationException($"The Web API response code is a success response code. Cannot initialize a {nameof(WebApiRequestException)} object with the specified {nameof(IHttpResponse)}.");
 
-            return new WebApiRequestException(exceptionMessage, httpResponse);
-        }
+			return new WebApiRequestException(exceptionMessage, httpResponse);
+		}
 
-        public DTOType GetDTOFromResponse<DTOType>(IHttpResponse httpResponse)
+		public DTOType GetDTOFromResponse<DTOType>(IHttpResponse httpResponse)
         {
             return ((SuccessResponseWithJsonContent<DTOType>)httpResponse).Content;
         }
