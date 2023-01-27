@@ -59,7 +59,6 @@ namespace Bitai.WebApi.Server
         /// <returns></returns>
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            //_logger.LogError(exception, "{className}: Interceped error.", nameof(ExceptionHandlingMiddleware));
             _logger.LogError("{className} trapped an error of type {exceptionType}. Below is the details of the error.", _fullTypeName, exception.GetType().FullName);
             _logger.LogError("{@exception}", exception);
 
@@ -71,6 +70,8 @@ namespace Bitai.WebApi.Server
 				httpStatusCode = HttpStatusCode.BadRequest;
 			else if (typeof(UnauthorizedException).Equals(exceptionType))
 				httpStatusCode = HttpStatusCode.Unauthorized;
+			else if (typeof(ConflictException).Equals(exceptionType))
+				httpStatusCode = HttpStatusCode.Conflict;
 			else //Any other type of error will be considered an internal server error.
 				httpStatusCode = HttpStatusCode.InternalServerError;
 
