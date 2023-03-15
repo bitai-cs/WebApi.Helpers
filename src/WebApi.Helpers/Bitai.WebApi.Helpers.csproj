@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Bitai.WebApi</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>6.0.5</Version>
+    <Version>7.0.0</Version>
     <Authors>Viko Bastidas (BITAI)</Authors>
     <Company>BITAI</Company>
     <Product>ASP NET. Core Web Api Helpers</Product>
     <Description>ASP NET. Core Web Api Helpers</Description>
-    <AssemblyVersion>6.0.5.7</AssemblyVersion>
-    <FileVersion>6.0.5.7</FileVersion>
+    <AssemblyVersion>7.0.0.7</AssemblyVersion>
+    <FileVersion>7.0.0.7</FileVersion>
     <Copyright></Copyright>
     <PackageId>Bitai.WebApi.Helpers</PackageId>
     <RepositoryUrl>https://github.com/bitai-cs/WebApi.Helpers</RepositoryUrl>
@@ -21,8 +21,8 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
-    <PackageReference Include="System.Text.Json" Version="6.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    <PackageReference Include="System.Text.Json" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>
