@@ -14,6 +14,8 @@ namespace Bitai.WebApi.Client
     {
         protected readonly string WebApiBaseUrl;
         protected readonly string WebApiClientGuid = Guid.NewGuid().ToString();
+        protected readonly HttpClientHandler Handler;
+        protected readonly bool DisposeHandler;
 
 
 
@@ -39,15 +41,27 @@ namespace Bitai.WebApi.Client
             WebApiBaseUrl = webApiBaseUrl;
         }
 
-        protected WebApiBaseClient(string webApiBaseUrl, WebApiClientCredential clientCredentials) : this(webApiBaseUrl)
+		protected WebApiBaseClient(string webApiBaseUrl, HttpClientHandler handler, bool disposeHandler): this(webApiBaseUrl)
+		{
+			Handler = handler;
+			DisposeHandler = disposeHandler;
+		}
+
+		protected WebApiBaseClient(string webApiBaseUrl, WebApiClientCredential clientCredentials) : this(webApiBaseUrl)
         {
             ClientCredentials = clientCredentials;
         }
 
+		protected WebApiBaseClient(string webApiBaseUrl, WebApiClientCredential clientCredentials, HttpClientHandler handler, bool disposeHandler) : this(webApiBaseUrl, clientCredentials)
+		{
+            Handler = handler;
+			DisposeHandler = disposeHandler;
+		}
 
 
 
-        public void ThrowClientRequestException(string exceptionMessage, IHttpResponse httpResponse)
+
+		public void ThrowClientRequestException(string exceptionMessage, IHttpResponse httpResponse)
         {
             throw GetClientRequestException(exceptionMessage, httpResponse);
         }
@@ -94,11 +108,14 @@ namespace Bitai.WebApi.Client
             if (WebApiClientParameters.MaxResponseContentBufferSize == 0)
                 throw new InvalidOperationException("No se ha inicializado el parametro WebApiClientStartup.MaxResponseContentBufferSize");
 
-            var httpClient = new AuthorizedHttpClient
-            {
-                Timeout = new TimeSpan(0, 0, WebApiClientParameters.ClientRequestTimeOut),
-                MaxResponseContentBufferSize = WebApiClientParameters.MaxResponseContentBufferSize
-            };
+            AuthorizedHttpClient httpClient;
+            if (Handler == null)
+                httpClient = new AuthorizedHttpClient();
+            else 
+                httpClient = new AuthorizedHttpClient(Handler, DisposeHandler);
+
+            httpClient.Timeout = new TimeSpan(0, 0, WebApiClientParameters.ClientRequestTimeOut);
+            httpClient.MaxResponseContentBufferSize = WebApiClientParameters.MaxResponseContentBufferSize;
 
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypes.ApplicationJson));
