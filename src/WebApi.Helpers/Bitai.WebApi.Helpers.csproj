@@ -1,35 +1,52 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>Bitai.WebApi</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>7.0.0</Version>
-    <Authors>Viko Bastidas (BITAI)</Authors>
-    <Company>BITAI</Company>
-    <Product>ASP NET. Core Web Api Helpers</Product>
-    <Description>ASP NET. Core Web Api Helpers</Description>
-    <AssemblyVersion>7.0.0.7</AssemblyVersion>
-    <FileVersion>7.0.0.7</FileVersion>
-    <Copyright></Copyright>
-    <PackageId>Bitai.WebApi.Helpers</PackageId>
-    <RepositoryUrl>https://github.com/bitai-cs/WebApi.Helpers</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/bitai-cs/WebApi.Helpers</PackageProjectUrl>
-    <PackageIcon>api_64.png</PackageIcon>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>Bitai.WebApi</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>8.0.0</Version>
+		<Authors>Viko Bastidas (BITAI)</Authors>
+		<Company>BITAI</Company>
+		<Product>BITAI Web Api Helpers</Product>
+		<Description>ASP NET. Core Web Api Helpers</Description>
+		<AssemblyVersion>8.0.0.7</AssemblyVersion>
+		<FileVersion>8.0.0.7</FileVersion>
+		<Copyright>© 2024 Bitai Web Api Helpers. All rights reserved.</Copyright>
+		<PackageId>Bitai.WebApi.Helpers</PackageId>
+		<RepositoryUrl>https://github.com/bitai-cs/WebApi.Helpers</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/bitai-cs/WebApi.Helpers</PackageProjectUrl>
+		<PackageIcon>api_64.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>api;web;helpers;security;serialization</PackageTags>
+		<PackageReleaseNotes>Upgraded to .NET 8</PackageReleaseNotes>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="IdentityModel" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\resources\api_64.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="IdentityModel" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\LICENSE.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\resources\api_64.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

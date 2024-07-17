@@ -100,10 +100,10 @@ namespace Bitai.WebApi.Client
         {
             var discoveryDocResponse = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
-                Address = clientCredentials.AuthorityUrl,
+                Address = clientCredentials.AuthorityUrl.ToLower(),
                 Policy = new DiscoveryPolicy
                 {
-                    RequireHttps = false
+                    RequireHttps = false                    
                 }
             });
 
