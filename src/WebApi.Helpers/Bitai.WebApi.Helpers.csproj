@@ -4,13 +4,13 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>Bitai.WebApi</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>8.0.0</Version>
+		<Version>8.0.1</Version>
 		<Authors>Viko Bastidas (BITAI)</Authors>
 		<Company>BITAI</Company>
 		<Product>BITAI Web Api Helpers</Product>
 		<Description>ASP NET. Core Web Api Helpers</Description>
-		<AssemblyVersion>8.0.0.7</AssemblyVersion>
-		<FileVersion>8.0.0.7</FileVersion>
+		<AssemblyVersion>8.0.1.7</AssemblyVersion>
+		<FileVersion>8.0.1.7</FileVersion>
 		<Copyright>© 2024 Bitai Web Api Helpers. All rights reserved.</Copyright>
 		<PackageId>Bitai.WebApi.Helpers</PackageId>
 		<RepositoryUrl>https://github.com/bitai-cs/WebApi.Helpers</RepositoryUrl>
