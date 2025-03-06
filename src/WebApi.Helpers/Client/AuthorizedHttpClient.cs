@@ -1,8 +1,4 @@
-﻿using IdentityModel.Client;
-using System;
-using System.Collections.Concurrent;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Net.Http;
 
 namespace Bitai.WebApi.Client
 {

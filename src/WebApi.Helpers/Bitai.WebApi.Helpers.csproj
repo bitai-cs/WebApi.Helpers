@@ -4,13 +4,13 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>Bitai.WebApi</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>8.0.1</Version>
+		<Version>8.0.2</Version>
 		<Authors>Viko Bastidas (BITAI)</Authors>
 		<Company>BITAI</Company>
 		<Product>BITAI Web Api Helpers</Product>
 		<Description>ASP NET. Core Web Api Helpers</Description>
-		<AssemblyVersion>8.0.1.7</AssemblyVersion>
-		<FileVersion>8.0.1.7</FileVersion>
+		<AssemblyVersion>8.0.2.7</AssemblyVersion>
+		<FileVersion>8.0.2.7</FileVersion>
 		<Copyright>© 2024 Bitai Web Api Helpers. All rights reserved.</Copyright>
 		<PackageId>Bitai.WebApi.Helpers</PackageId>
 		<RepositoryUrl>https://github.com/bitai-cs/WebApi.Helpers</RepositoryUrl>
@@ -29,9 +29,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="IdentityModel" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
-		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="Duende.IdentityModel" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
+		<PackageReference Include="System.Text.Json" Version="9.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
