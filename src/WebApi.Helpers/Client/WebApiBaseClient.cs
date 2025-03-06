@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Bitai.WebApi.Common;
+using Duende.IdentityModel.Client;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Bitai.WebApi.Common;
-using IdentityModel.Client;
 
 namespace Bitai.WebApi.Client
 {
