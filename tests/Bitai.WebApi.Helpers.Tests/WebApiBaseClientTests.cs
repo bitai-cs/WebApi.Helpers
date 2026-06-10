@@ -208,9 +208,9 @@ public class WebApiBaseClientTests
         using var content = client.GetStringContentFromObjectForTest(dto);
         var json = await content.ReadAsStringAsync();
 
-        Assert.Equal("{\"Id\":42,\"Name\":\"answer\"}", json);
-        Assert.Equal("application/json", content.Headers.ContentType?.MediaType);
-        Assert.Equal("utf-8", content.Headers.ContentType?.CharSet);
+        Assert.Equal("{\"Id\":42,\"Name\":\"answer\"}", json, true);
+        Assert.Equal("application/json", content.Headers.ContentType?.MediaType, true);
+        Assert.Equal("utf-8", content.Headers.ContentType?.CharSet, true);
     }
 
     [Fact]
